@@ -42,5 +42,7 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
+	Zero16(in=x[0..15], negate=zx, out=zerox);
+	Zero16(in=y[0..15], negate=zy, out=zeroy);
    // Put you code here:
 }
