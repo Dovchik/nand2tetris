@@ -1,0 +1,11 @@
+CHIP Negator16 {
+    IN  
+        in[16],
+		negate;
+    OUT 
+        out[16];
+
+    PARTS:
+	Not16(in=in[0..15], out=notin);
+	Mux16(a=in[0..15], b=notin, sel=negate, out=out); 
+}

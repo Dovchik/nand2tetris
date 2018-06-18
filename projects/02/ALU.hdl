@@ -42,7 +42,28 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
+	//zero x and y
 	Zero16(in=x[0..15], negate=zx, out=zerox);
 	Zero16(in=y[0..15], negate=zy, out=zeroy);
-   // Put you code here:
+	//negate x and y
+	Negator16(in=zerox, negate=nx, out=negx);
+	Negator16(in=zeroy, negate=ny, out=negy);
+	
+	//calculate f and select
+	And16(a=negx, b=negy, out=out0);//f==0 aNd
+	Add16(a=negx, b=negy, out=out1);//f==1 aDd
+	Mux16(a=out0, b=out1, sel=f, out[0..15]=outend);
+	
+	// negate out and let it be
+	Mux16(sel=no, a=false, b=true, out=t);
+	Not16(in=t, out=notno16);
+	//And16(a=outend, b=notno16, out=out, out=out2, out[15..15]=outbit);
+	Negator16(in=outend, negate=no, out=out, out=out2, out[15..15]=outbit);
+	//calculate ng
+	And(a=outbit, b=true, out=ng);
+	
+	// calculate zr
+	AllZero16(in=out2, out=zr);
+	//And16to1(in=out2, out=notzr);
+	//Not(in=notzr, out=zr);
 }
