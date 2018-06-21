@@ -30,6 +30,7 @@ CHIP PC {
 	Not(in=load, out=notLoad);
 	And(a=notLoad, b=isInc, out=realInc);
 	And(a=notreset, b=realInc, out=trueInc);
+	
 	Inc16(in=r2, out=incremented);
 	Mux16(a=r2, b=incremented, sel=trueInc, out=r3);
 	
