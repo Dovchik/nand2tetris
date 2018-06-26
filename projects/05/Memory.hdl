@@ -27,5 +27,28 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+	//what to read
+	Xor(a=address[14], b=address[13], out=toscreen);
+	And(a=toscreen, b=address[14], out=toscreenA);
+	And(a=toscreen, b=address[13], out=toscreenB);
+	
+	And(a=address[14], b=address[13], out=readkeyboard);
+	
+	//select where to load
+	Mux(a=false, b=load, sel=toscreenA, out=loadScreenA);
+	Mux(a=false, b=load, sel=toscreenB, out=loadScreenB);
+	
+	
+	Mux(a=load, b=false, sel=toscreen, out=toMem);
+	
+	RAM16K(in=in, load=toMem, address=address[0..13], out=memout);
+	Screen(in=in, load=loadScreenA, address=address[0..12], out=outscreenA);
+	Screen(in=in, load=loadScreenB, address=address[0..12], out=outscreenB);
+	Keyboard(out=keyout);
+	
+	
+	//select readed
+	Mux16(a=memout, b=keyout, sel=readkeyboard, out=reada);
+	Mux16(a=reada, b=outscreenA, sel=toscreenA, out=readb);
+	Mux16(a=readb, b=outscreenB, sel=toscreenB, out=out);
 }
