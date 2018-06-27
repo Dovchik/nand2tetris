@@ -39,5 +39,38 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+	And(a=instruction[15], b=true, out=cInstruction);
+	Not(in=cInstruction, out=aInstruction);
+	
+	Mux16(a[0..14]=instruction[0..14], a[15]=false, b=aluOut, sel=cInstruction, out=inAReg);
+	
+   	//d1 d2 d3
+	//i5 i4 i3 where i is instrucuction and n is a bit
+	//AReg DReg MemA
+ 	ARegister(in=inAReg, load=instruction[5], out=outAReg, out=outAReg1, out[0..14]=addressM);
+	
+	//read M if i12 is true, else A
+	Mux16(a=outAReg, b=inM, sel=instruction[12], out=AMin);
+	
+	DRegister(in=aluOut1, load=instruction[4] , out=dOut);
+	
+	ALU(x=AMin, y=dOut, zx=instruction[11] ,nx=instruction[10], 
+	zy=instruction[9], ny=instruction[8],
+	f=instruction[7], no=instruction[6], 
+	out=aluOut, out=aluOut1, out=outM, zr=outZero, zr=outZero1, ng=outNeg, ng=outNeg1);
+	
+	//Write to M
+	And(a=true, b=instruction[3], out=writeM);
+	
+	And(a=instruction[2], b=outNeg, out=jump1);
+	And(a=instruction[1], b=outZero, out=jump2);
+	Or(a=outZero1, b=outNeg1, out=isZeroOrLess);
+	Not(in=isZeroOrLess, out=moreZero);
+	And(a=instruction[0], b=moreZero, out=jump3);
+	
+	Or(a=jump1, b=jump2, out=jump4);
+	Or(a=jump3, b=jump4, out=jump, out=forNotJump);
+	Not(in=forNotJump, out=notJump);
+	
+	PC(in=outAReg1, reset=reset ,inc=notJump, load=jump, out[0..14]=pc);
 }
