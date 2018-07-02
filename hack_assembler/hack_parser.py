@@ -1,31 +1,45 @@
 from CommandType import CommandType
+import symbol_table
 
+links = []
 
-def parse_asm(file_lines) -> []:
+def parse_asm(file_lines, link_lines) -> []:
+    global links
+    links = link_lines
+    print(links)
     ml_lines = []
-    for line in file_lines:
+    for i, line in enumerate(file_lines):
         command_type = identify_command(line)
         if command_type == CommandType.C_COMMAND:
             ml_lines.append(build_command_bytes(line))
         if command_type == CommandType.A_COMMAND:
             ml_lines.append(symbol(line))
+        if command_type == CommandType.L_COMMAND:
+            if not symbol_table.contains(line[1:]):
+                symbol_table.add_with_address(line[1:], links[line[1:]])
+            ml_lines.append(format(links[line[1:]], '016b'))
     return ml_lines
 
 
 def identify_command(line: str) -> CommandType:
+    global links
     print(line)
-    if line.startswith('@'):
+    if line.startswith('@') and not line[1:] in links:
         return CommandType.A_COMMAND
     if "=" in line or ";" in line:
         return CommandType.C_COMMAND
-    if line.startswith('(') and line.endswith(')'):
+    if line.startswith('@') and line[1:] in links:
         return CommandType.L_COMMAND
-    raise Exception("Not a supported commnd")
+    raise Exception("Not a supported command")
 
 
 def symbol(line: str):
     s_line = "0"
     n_line = line[1:]
+    if not n_line.isdigit():
+        if not symbol_table.contains(n_line):
+            symbol_table.add_entry(n_line)
+        n_line = str(symbol_table.get_address(n_line))
     s_line += format(int(n_line), '015b')
     return s_line
 
