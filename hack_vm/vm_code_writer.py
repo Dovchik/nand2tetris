@@ -6,6 +6,15 @@ equality_counter = 0
 next_counter = 0
 
 
+def increase_stack_pointer():
+    ml_lines.append("@SP")
+    ml_lines.append("M=M+1")
+
+
+def descrease_stack_pointer():
+    ml_lines.append("@SP")
+    ml_lines.append("M=M-1")
+
 def prev_constant():
     return commands[-1] == 'constant'
 
@@ -85,3 +94,4 @@ def write_push_command(line_def):
             ml_lines.append('@' + line_def['arg'][1])
             if not prev_constant():
                 ml_lines.append('D=A')
+            

@@ -37,6 +37,11 @@ def get_files(source):
 args = parser.parse_args()
 source = args.source
 
+
+def write_and_command(file):
+    file.write('@END\n0;JMP')
+
+
 if isfile(source) and is_vm_file(source):
     print("Is file " + source)
     with open(source, 'r') as source_file:
@@ -51,6 +56,7 @@ if isfile(source) and is_vm_file(source):
         for ml in ml_lines:
             dest_file.write(ml)
             dest_file.write('\n')
+        write_and_command(dest_file)
 
 
 if isdir(source):

@@ -2,3 +2,5 @@
 D=A
 @8
 D=D+A
+@END
+0;JMP
