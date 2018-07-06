@@ -4,16 +4,22 @@ ml_lines = []
 commands = ['empty']
 equality_counter = 0
 next_counter = 0
+stack_pointer = 256
 
 
 def increase_stack_pointer():
+    global stack_pointer
+    stack_pointer += 1
     ml_lines.append("@SP")
     ml_lines.append("M=M+1")
 
 
 def descrease_stack_pointer():
+    global stack_pointer
+    stack_pointer -= 1
     ml_lines.append("@SP")
     ml_lines.append("M=M-1")
+
 
 def prev_constant():
     return commands[-1] == 'constant'
@@ -58,6 +64,12 @@ def write_eq_command(line_def):
         equality_counter += 1
 
 
+def read_stack_to(dest: str):
+    descrease_stack_pointer()
+    point_stack_current()
+    ml_lines.append(dest + '=M')
+
+
 def add_next_symbol():
     global next_counter
     symb_next = 'NEXT.' + str(next_counter)
@@ -84,7 +96,20 @@ def get_symbol_link(symbol):
 
 def write_add_command(line_def):
     if line_def['arg'][0] == 'add':
-        ml_lines.append('D=D+A')
+        read_stack_to('D')
+        descrease_stack_pointer()
+        write_to_stack('M+D')
+
+
+def write_to_stack(dest):
+    point_stack_current()
+    ml_lines.append("M=" + dest)
+    increase_stack_pointer()
+
+
+def point_stack_current():
+    global stack_pointer
+    ml_lines.append('@' + str(stack_pointer))
 
 
 def write_push_command(line_def):
@@ -92,6 +117,5 @@ def write_push_command(line_def):
         arg = line_def['arg'][0]
         if arg == 'constant':
             ml_lines.append('@' + line_def['arg'][1])
-            if not prev_constant():
-                ml_lines.append('D=A')
-            
+            ml_lines.append('D=A')
+            write_to_stack('D')

@@ -39,7 +39,7 @@ source = args.source
 
 
 def write_and_command(file):
-    file.write('@END\n0;JMP')
+    file.write('(END)\n@END\n0;JMP')
 
 
 if isfile(source) and is_vm_file(source):
