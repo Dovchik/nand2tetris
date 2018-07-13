@@ -4,7 +4,8 @@ from os import listdir
 from vm_parser import parse_line
 from io import open
 from vm_parser import parse_line
-from vm_code_writer import get_ml_lines, write_command
+from ml_lines import get_lines, add_line
+from vm_code_writer import write_command
 
 parser = argparse.ArgumentParser(
     description='Translate VM code into Hack Machine Language')
@@ -50,7 +51,7 @@ if isfile(source) and is_vm_file(source):
             if parsed is None:
                 continue
             write_command(parsed)
-    ml_lines = get_ml_lines()
+    ml_lines = get_lines()
     print(ml_lines)
     with open(change_extension(source), 'w') as dest_file:
         for ml in ml_lines:

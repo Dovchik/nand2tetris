@@ -1,0 +1,11 @@
+@2
+D=A
+@LCL
+D=M+A
+@i
+M=D
+@M[SP]
+D=M
+@i
+A=M
+M=D

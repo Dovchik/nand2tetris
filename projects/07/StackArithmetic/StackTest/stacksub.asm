@@ -2,13 +2,13 @@
 D=A
 @SP
 M=D
-@7
+@892
 D=A
 @256
 M=D
 @SP
 M=M+1
-@8
+@891
 D=A
 @257
 M=D
@@ -21,7 +21,7 @@ D=M
 @SP
 M=M-1
 @256
-M=M+D
+M=M-D
 (END)
 @END
 0;JMP

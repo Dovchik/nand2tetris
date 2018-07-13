@@ -1,0 +1,5 @@
+push constant 2
+push constant 2
+push constant 3
+not
+not
