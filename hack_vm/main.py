@@ -3,9 +3,10 @@ from os.path import isfile, isdir, join
 from os import listdir
 from vm_parser import parse_line
 from io import open
+import ntpath as ntpath
 from vm_parser import parse_line
 from ml_lines import get_lines, add_line
-from vm_code_writer import write_command
+from vm_code_writer import write_command, set_file_name
 
 parser = argparse.ArgumentParser(
     description='Translate VM code into Hack Machine Language')
@@ -44,8 +45,9 @@ def write_and_command(file):
 
 
 if isfile(source) and is_vm_file(source):
-    print("Is file " + source)
+    print("File: " + source)
     with open(source, 'r') as source_file:
+        set_file_name(ntpath.basename(source))
         for line in source_file:
             parsed = parse_line(line)
             if parsed is None:

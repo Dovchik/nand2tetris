@@ -4,6 +4,7 @@ stack_pointer = 256
 equality_counter = 0
 next_counter = 0
 temp_base = 5
+pointer_base = 3
 
 
 def init_stack_pointer():
@@ -120,7 +121,20 @@ def write_const_to(const, dest):
 
 def point_to_temp(location):
     global temp_base
-    add_line('@' + str(temp_base+location))
+    point_to_base(temp_base, location)
+
+
+def point_to_pointer(location):
+    global pointer_base
+    point_to_base(pointer_base, location)
+
+
+def point_static(name, location):
+    add_line('@' + name + '.' + location)
+
+
+def point_to_base(base, location):
+    add_line('@' + str(base + location))
 
 
 def false_label():
