@@ -56,9 +56,13 @@ def write_to_stack(source):
 def add_next_symbol():
     global next_counter
     symb_next = 'NEXT.' + str(next_counter)
-    add_line('@' + symb_next)
-    add_line('0;JMP')
+    unconditional_jump(symb_next)
     return symb_next
+
+
+def unconditional_jump(location):
+    add_line('@'+location)
+    add_line('0;JMP')
 
 
 def read_stack_and_write(dest, op):

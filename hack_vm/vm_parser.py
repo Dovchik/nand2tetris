@@ -36,3 +36,9 @@ def command_type(command: str):
         return vm_command_type.Push
     if command == 'pop':
         return vm_command_type.Pop
+    if command == 'label':
+        return vm_command_type.Label
+    if command == 'if-goto':
+        return vm_command_type.If
+    if command == 'goto':
+        return vm_command_type.Goto
