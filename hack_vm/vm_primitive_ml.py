@@ -37,7 +37,8 @@ def pop_stack_value(dest: str):
 
 
 def point_top_stack_val():
-    add_line('@' + str(stack_pointer - 1))
+    add_line('@SP')
+    add_line('A=M')
 
 
 def read_stack_to(dest: str, discrease_pointer=True):
@@ -75,7 +76,8 @@ def read_stack_and_write(dest, op):
 
 def point_stack_current():
     global stack_pointer
-    add_line('@' + str(stack_pointer))
+    add_line('@SP')
+    add_line('A=M')
 
 
 def get_symbol_link(symbol):
