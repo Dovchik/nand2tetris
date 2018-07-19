@@ -3,7 +3,7 @@ from vm_command_type import vm_command_type
 arithmetic = ['add', 'sub', 'neg', 'eq', 'gt', 'lt', 'and', 'or', 'not']
 
 
-def get_arg(command_type, line:[str]):
+def get_arg(command_type, line: [str]):
     if command_type == vm_command_type.Arithmetic:
         return line
     else:
@@ -42,3 +42,9 @@ def command_type(command: str):
         return vm_command_type.If
     if command == 'goto':
         return vm_command_type.Goto
+    if command == 'function':
+        return vm_command_type.Function
+    if command == 'return':
+        return vm_command_type.Return
+    if command == 'call':
+        return vm_command_type.Call

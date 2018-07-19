@@ -4,8 +4,8 @@ from vm_command_type import vm_command_type
 import stack_code_writers.arithmetic as arithmetic
 import stack_code_writers.memory_access as memory_access
 import stack_code_writers.program_flow as program_flow
+import stack_code_writers.function_calls as function_calls
 
-commands = ['empty']
 file_name = 'No_FILE_NAME'
 
 
@@ -20,5 +20,5 @@ def write_command(line_def):
     memory_access.write_push_command(line_def)
     memory_access.write_pop_command(line_def)
     arithmetic.write_arithmetic_commands(line_def)
-    commands.append(line_def['arg'][0])
     program_flow.write_program_flow_command(line_def)
+    function_calls.write_function_calls_commands(line_def)

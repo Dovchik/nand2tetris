@@ -6,7 +6,7 @@ def write_function_calls_commands(line_def):
     c_type = line_def['command_type']
     args = line_def['arg']
     if c_type == vm_command_type.Function:
-        write_function(args[0], args[1])
+        write_function(args[0], int(args[1]))
     if c_type == vm_command_type.Call:
         write_call(args[0], args[1])
     if c_type == vm_command_type.Return:
@@ -27,19 +27,85 @@ def write_call(name, var_count):
 
 def write_return():
     #frame = lcl
+    frame()
+    # ret = *(frame - 5)\
+    save_return_address()
+    # Arg = pop / arg pointer  = pop
+    reposition_return_val()
+    #sp = arg + 1
+    restore_sp_of_caller()
+
+    restore_vm_symbols('THAT')
+
+    restore_vm_symbols('THIS')
+
+    restore_vm_symbols('ARG')
+
+    restore_vm_symbols('LCL')
+
+    go_to_return_address()
+    return
+
+
+def go_to_return_address():
+    primitive_ml.add_line('@RET')
+    primitive_ml.add_line('A=M')
+    primitive_ml.add_line('0;JMP')
+
+
+def restore_vm_symbols(symbol):
+    frame_minus()
+    primitive_ml.add_line('@' + symbol)
+    primitive_ml.add_line('M=D')
+
+
+def restore_sp_of_caller():
+    primitive_ml.add_line('@ARG')
+    primitive_ml.add_line('D=M')
+    primitive_ml.set_stack_pointer('D+1')
+
+
+def reposition_return_val():
+    primitive_ml.read_stack_to('D')
+    primitive_ml.add_line('@ARG')
+    primitive_ml.add_line('A=M')
+    primitive_ml.add_line('M=D')
+
+
+def frame():
     primitive_ml.add_line('@LCL')
     primitive_ml.write_c_command('D', 'M')
     primitive_ml.add_line('@FRAME')
-    primitive_ml.write_c_command('M', 'D')
-    #ret = frame - 5
+    d_to_m()
+    primitive_ml.add_line('D=M')
+
+
+def save_return_address():
+    primitive_ml.add_line('@5')
+    primitive_ml.add_line('D=D-A')
+    primitive_ml.add_line('A=D')
+    primitive_ml.add_line('D=M')
     primitive_ml.add_line('@RET')
+    primitive_ml.add_line('M=D')
+
+
+def frame_minus():
+    primitive_ml.add_line('@FRAME')
+    primitive_ml.add_line('M=M-1')
+    primitive_ml.add_line('A=M')
+    primitive_ml.add_line('D=M')
+
+
+def frame_descrese_to_d():
+    primitive_ml.add_line('@FRAME')
+    primitive_ml.add_line('M=M-1')
+    primitive_ml.add_line('A=M')
+    primitive_ml.write_c_command('D', 'M')
+
+
+def d_to_m():
     primitive_ml.write_c_command('M', 'D')
-    primitive_ml.write_const_to(5, 'D')
-    primitive_ml.add_line('@RET')
-    primitive_ml.write_c_command('M', 'M+D')
-    #Arg = pop
-    primitive_ml.read_stack_to('D')
-    primitive_ml.add_line('@ARG')
-    primitive_ml.write_c_command('M', 'D')
-    #sp = arg + 1
-    return
+
+
+def decrement_d():
+    primitive_ml.write_c_command('D', 'D-1')

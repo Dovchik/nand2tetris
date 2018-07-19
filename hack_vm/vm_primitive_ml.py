@@ -10,24 +10,28 @@ pointer_base = 3
 def init_stack_pointer():
     add_line('@' + str(stack_pointer))
     add_line('D=A')
-    add_line('@SP')
+    point_sp()
     add_line('M=D')
 
 
-init_stack_pointer()
+def point_sp():
+    add_line('@SP')
+
+
+#init_stack_pointer()
 
 
 def increase_stack_pointer():
     global stack_pointer
     stack_pointer += 1
-    add_line("@SP")
+    point_sp()
     add_line("M=M+1")
 
 
 def descrease_stack_pointer():
     global stack_pointer
     stack_pointer -= 1
-    add_line("@SP")
+    point_sp()
     add_line("M=M-1")
 
 
@@ -37,7 +41,7 @@ def pop_stack_value(dest: str):
 
 
 def point_top_stack_val():
-    add_line('@SP')
+    point_sp()
     add_line('A=M')
 
 
@@ -52,6 +56,11 @@ def write_to_stack(source):
     point_stack_current()
     add_line("M=" + source)
     increase_stack_pointer()
+
+
+def set_stack_pointer(source):
+    point_sp()
+    write_c_command('M', source)
 
 
 def add_next_symbol():
@@ -76,7 +85,7 @@ def read_stack_and_write(dest, op):
 
 def point_stack_current():
     global stack_pointer
-    add_line('@SP')
+    point_sp()
     add_line('A=M')
 
 
