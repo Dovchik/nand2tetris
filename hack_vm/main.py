@@ -30,10 +30,11 @@ def is_vm_file(source):
 
 
 def get_files(source):
-    vm_files = [file for file in listdir(source)
+    vm_files = [ntpath.join(source, file) for file in listdir(source)
                 if isfile(join(source, file)) and is_vm_file(file)]
     for vm_file in vm_files:
         print(vm_file)
+    return vm_files
 
 
 args = parser.parse_args()
@@ -44,8 +45,23 @@ def write_and_command(file):
     file.write('(END)\n@END\n0;JMP')
 
 
-if isfile(source) and is_vm_file(source):
+def write_file(source):
     print("File: " + source)
+    parse_file(source)
+    ml_lines = get_lines()
+    print(ml_lines)
+    with open(change_extension(source), 'w') as dest_file:
+        write_result_file(dest_file, ml_lines)
+
+
+def write_result_file(dest_file, ml_lines):
+    for ml in ml_lines:
+        dest_file.write(ml)
+        dest_file.write('\n')
+    write_and_command(dest_file)
+
+
+def parse_file(source):
     with open(source, 'r') as source_file:
         set_file_name(ntpath.basename(source))
         for line in source_file:
@@ -53,14 +69,18 @@ if isfile(source) and is_vm_file(source):
             if parsed is None:
                 continue
             write_command(parsed)
-    ml_lines = get_lines()
-    print(ml_lines)
-    with open(change_extension(source), 'w') as dest_file:
-        for ml in ml_lines:
-            dest_file.write(ml)
-            dest_file.write('\n')
-        write_and_command(dest_file)
+
+
+if isfile(source) and is_vm_file(source):
+    write_file(source)
 
 
 if isdir(source):
-    get_files(source)
+    for file in get_files(source):
+        parse_file(file)
+    source_base = ntpath.basename(source) + '.asm'
+    ml_lines = get_lines()
+    dest_fn = ntpath.join(source, source_base)
+    print(dest_fn)
+    with open(dest_fn, 'w') as dest_file:
+        write_result_file(dest_file, ml_lines)

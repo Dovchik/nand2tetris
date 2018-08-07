@@ -1,4 +1,5 @@
 from ml_lines import add_line
+from stack_code_writers.function_calls import write_call
 
 stack_pointer = 256
 equality_counter = 0
@@ -19,6 +20,15 @@ def point_sp():
 
 
 #init_stack_pointer()
+
+
+def write_sys_init():
+    return
+    # add_line('@Sys.init')
+    # add_line('0;JMP')
+
+
+#write_sys_init()
 
 
 def increase_stack_pointer():

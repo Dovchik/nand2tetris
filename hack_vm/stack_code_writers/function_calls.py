@@ -1,6 +1,7 @@
 from vm_command_type import vm_command_type
 import vm_primitive_ml as primitive_ml
 
+return_counter = 0
 
 def write_function_calls_commands(line_def):
     c_type = line_def['command_type']
@@ -22,7 +23,49 @@ def write_function(name, var_count):
 
 
 def write_call(name, var_count):
+     # push return-address (using label below)
+    global return_counter
+    return_label = 'return.' + str(return_counter)
+    primitive_ml.add_line('@' + return_label)
+    primitive_ml.write_c_command('D', 'A')
+    primitive_ml.write_to_stack('D')
+    # push lcl
+    read_symbol_to_stack('LCL')
+    read_symbol_to_stack('ARG')
+    read_symbol_to_stack('THIS')
+    read_symbol_to_stack('THAT')
+    # reposition arg
+    primitive_ml.add_line('@SP')
+    primitive_ml.write_c_command('D', 'M')
+    primitive_ml.add_line('@ARG')
+    primitive_ml.write_c_command('M', 'D')
+    primitive_ml.add_line('@5')
+    primitive_ml.write_c_command('D', 'A')
+    primitive_ml.add_line('@ARG')
+    primitive_ml.write_c_command('M','M-D')
+    primitive_ml.add_line('@' + str(var_count))
+    primitive_ml.write_c_command('D', 'A')
+    primitive_ml.add_line('@ARG')
+    primitive_ml.write_c_command('M', 'M-D')
+
+    # reposition lcl
+
+    primitive_ml.add_line('@SP')
+    primitive_ml.write_c_command('D', 'M')
+    primitive_ml.add_line('@LCL')
+    primitive_ml.write_c_command('M', 'D')
+    # goto function
+    primitive_ml.unconditional_jump(name)
+    # declare return label
+    primitive_ml.add_symbol_link(return_label)
+    return_counter += 1
     return
+
+
+def read_symbol_to_stack(symbol):
+    primitive_ml.add_line('@' + symbol)
+    primitive_ml.write_c_command('D', 'M')
+    primitive_ml.write_to_stack('D')
 
 
 def write_return():
